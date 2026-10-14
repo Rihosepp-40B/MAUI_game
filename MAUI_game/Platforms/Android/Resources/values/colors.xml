@@ -4,4 +4,6 @@
     <color name="colorPrimary">@android:color/transparent</color>
     <color name="colorPrimaryDark">@android:color/transparent</color>
     <color name="colorAccent">#2B0B98</color>
+	
+	<!--Kui toolbar on sees siis läbipaistvale statusbarile kipub android paigutama valge akna-->
 </resources>
