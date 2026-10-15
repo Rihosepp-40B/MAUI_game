@@ -11,8 +11,11 @@ namespace MAUI_game
         {
             base.OnCreate(savedInstanceState);
 
-            // Sunnib rakenduse ainult landscape vaatesse
-            RequestedOrientation = ScreenOrientation.Landscape;
+            //// Sunnib rakenduse ainult landscape vaatesse, sunnib ainult ühele küljele
+            //RequestedOrientation = ScreenOrientation.Landscape;
+
+            // See lubab landscape mõlemal küljel
+            RequestedOrientation = ScreenOrientation.SensorLandscape;
         }
     }
 }
