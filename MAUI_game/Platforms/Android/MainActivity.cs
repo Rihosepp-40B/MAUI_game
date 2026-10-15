@@ -16,6 +16,13 @@ namespace MAUI_game
 
             // See lubab landscape mõlemal küljel
             RequestedOrientation = ScreenOrientation.SensorLandscape;
+
+            // See kautab androidis ära statusbar'i
+            #if ANDROID
+                var activity = Microsoft.Maui.ApplicationModel.Platform.CurrentActivity;
+                activity?.Window?.AddFlags(Android.Views.WindowManagerFlags.Fullscreen);
+                activity?.Window?.ClearFlags(Android.Views.WindowManagerFlags.ForceNotFullscreen);
+            #endif
         }
     }
 }
