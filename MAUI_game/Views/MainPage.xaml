@@ -1,10 +1,183 @@
 ﻿<?xml version="1.0" encoding="utf-8" ?>
 <ContentPage xmlns="http://schemas.microsoft.com/dotnet/2021/maui"
              xmlns:x="http://schemas.microsoft.com/winfx/2009/xaml"
-             xmlns:local="clr-namespace:MAUI_game"
+             xmlns:services="clr-namespace:MAUI_game.Services"
+             xmlns:models="clr-namespace:MAUI_game.Models"
+             xmlns:vm="clr-namespace:MAUI_game.ViewModels"
+             xmlns:views="clr-namespace:MAUI_game.Views"
              x:Class="MAUI_game.Views.MainPage"
              Shell.NavBarIsVisible="False"
-             BackgroundColor="#1E1E1E">    <!--Background muudab lehekülje tausta värvi shell.NavbarVisible = "False" kautab toolbari-->
+             BackgroundColor="{AppThemeBinding Light={StaticResource UIMainL}, Dark={StaticResource UIMainD}}"
+             SafeAreaEdges="None"> <!--Background muudab lehekülje tausta värvi shell.NavbarVisible = "False" kautab toolbari-->
+    
+    <ContentPage.Resources>
+        <Color x:Key="UIMainL">LightGrey</Color>
+        <Color x:Key="UIMainD">Black</Color>
+    </ContentPage.Resources>
 
+    <ContentPage.BindingContext>
+        <vm:GameLanguageViewModel />
+    </ContentPage.BindingContext>
 
+    <Grid x:Name="RootGrid" RowDefinitions="Auto, *">
+
+        <!--Ülemine info riba-->
+        <Grid Grid.Row="0" ColumnDefinitions="*, *, *, *, *" Background="{AppThemeBinding Light={StaticResource UIMainL}, Dark={StaticResource UIMainD}}" Padding="5">
+            <HorizontalStackLayout Grid.Column="0" Spacing="5" HorizontalOptions="Start">
+                <Label Text="{Binding LanguageVM.Lives}" TextColor="{AppThemeBinding Light={StaticResource UIMainD}, Dark={StaticResource UIMainL}}" FontSize="16" VerticalTextAlignment="Center"/>
+                <Label x:Name="LblLives" Text="10" TextColor="Red" FontSize="16" FontAttributes="Bold" VerticalTextAlignment="Center"/>
+            </HorizontalStackLayout>
+            <HorizontalStackLayout Grid.Column="1" Spacing="5" HorizontalOptions="Start">
+                <Label Text="{Binding LanguageVM.Gold}" TextColor="{AppThemeBinding Light={StaticResource UIMainD}, Dark={StaticResource UIMainL}}" FontSize="16" VerticalTextAlignment="Center"/>
+                <Label x:Name="LblGold" Text="10" TextColor="Gold" FontSize="16" FontAttributes="Bold" VerticalTextAlignment="Center"/>
+            </HorizontalStackLayout>
+            <HorizontalStackLayout Grid.Column="2" Spacing="5" HorizontalOptions="Start">
+                <Label Text="{Binding LanguageVM.Score}" TextColor="{AppThemeBinding Light={StaticResource UIMainD}, Dark={StaticResource UIMainL}}" FontSize="16" VerticalTextAlignment="Center"/>
+                <Label x:Name="LblScore" Text="10" TextColor="GreenYellow" FontSize="16" FontAttributes="Bold" VerticalTextAlignment="Center"/>
+            </HorizontalStackLayout>
+            <HorizontalStackLayout Grid.Column="3" Spacing="5" HorizontalOptions="Start">
+                <Label Text="{Binding LanguageVM.NextWave}" TextColor="{AppThemeBinding Light={StaticResource UIMainD}, Dark={StaticResource UIMainL}}" FontSize="16" VerticalTextAlignment="Center"/>
+                <Label x:Name="LblWaveTimer" Text="10" TextColor="Blue" FontSize="16" FontAttributes="Bold" VerticalTextAlignment="Center"/>
+            </HorizontalStackLayout>
+            <HorizontalStackLayout Grid.Column="4" Spacing="5" HorizontalOptions="Start">
+                <Label Text="{Binding LanguageVM.WaveLvl}" TextColor="{AppThemeBinding Light={StaticResource UIMainD}, Dark={StaticResource UIMainL}}" FontSize="16" VerticalTextAlignment="Center"/>
+                <Label x:Name="LblWaveLevel" Text="10" TextColor="Blue" FontSize="16" FontAttributes="Bold" VerticalTextAlignment="Center"/>
+            </HorizontalStackLayout>
+        </Grid>
+
+        <!--Mängu ala-->
+        <Grid Grid.Row="1" ColumnDefinitions="*, Auto" Background="Black">
+
+            <!--Mängu väli-->
+            <Border Grid.Column="0" Padding="0">
+                <GraphicsView x:Name="GameGraphicsView"
+                              StartInteraction="OnCanvasStartInteraction"
+                              DragInteraction="OnCanvasDragInteraction"
+                              EndInteraction="OnCanvasEndInteraction">
+                    <GraphicsView.Drawable>
+                        <services:DrawGameService x:Name="GameWorldInstance" />
+                    </GraphicsView.Drawable>
+                </GraphicsView>
+            </Border>
+
+            <!--Ehitus menüü-->
+            <Grid Grid.Column="1" RowDefinitions="*, Auto" Padding="5" Background="{AppThemeBinding Light={StaticResource UIMainL}, Dark={StaticResource UIMainD}}">
+                <ScrollView Grid.Row="0">
+                    <VerticalStackLayout x:Name="TowerButtonsLayout"
+                                         Spacing="5"
+                                         HorizontalOptions="Center"
+                                         BindableLayout.ItemsSource="{Binding TowerCatalog.Values}">
+                        <BindableLayout.ItemTemplate>
+                            <DataTemplate x:DataType="models:TowerTypeModel">
+                                <Button Text="{Binding Name}"
+                                        BackgroundColor="{Binding Color}"
+                                        TextColor="White"
+                                        BorderColor="LightGray"
+                                        BorderWidth="5"                                        
+                                        CommandParameter="{Binding Id}"
+                                        Clicked="OnTowerCatalogItemClicked"
+                                        WidthRequest="100"/>
+                            </DataTemplate>
+                        </BindableLayout.ItemTemplate>
+                    </VerticalStackLayout>
+                </ScrollView>
+                <VerticalStackLayout Grid.Row="1" HorizontalOptions="Center">
+                    <Button x:Name="BtnPause" 
+                        Text="{Binding LanguageVM.Pause}" 
+                        BackgroundColor="#444444"
+                        TextColor="White" 
+                        Clicked="OnPauseClicked"
+                        HorizontalOptions="End"
+                        IsVisible="True"
+                        VerticalOptions="Center" 
+                        Padding="10,5"/>
+                </VerticalStackLayout>
+            </Grid>
+        </Grid>
+
+        <Grid Grid.Row="0" Grid.RowSpan="2" x:Name="GrdGamePauseOver" IsVisible="False" BackgroundColor="#80000000">
+            <VerticalStackLayout x:Name="PausMenuLayout" HorizontalOptions="Center" VerticalOptions="Center">
+                <Label x:Name="LblGamePaused" IsVisible="True" TextColor="LawnGreen" FontSize="20" HorizontalOptions="Center" Text="{Binding LanguageVM.Paused}" />
+                <Label x:Name="LblGameOver" IsVisible="False" TextColor="Red" FontSize="20" HorizontalOptions="Center" Text="{Binding LanguageVM.GameOver}"/>
+                <Label x:Name="LblHighScore" IsVisible="True" TextColor="White" FontSize="18" HorizontalOptions="Center" Text="{Binding LanguageVM.Highscore}"/>
+                <Button x:Name="BtnResume" 
+                        Text="{Binding LanguageVM.Resume}" 
+                        BackgroundColor="#2E8B57"
+                        TextColor="White" 
+                        Clicked="OnPauseClicked"
+                        HorizontalOptions="Center"
+                        IsVisible="True"
+                        VerticalOptions="Center" 
+                        Padding="10,5"/>
+
+                <Button Text="{Binding LanguageVM.Settings}" 
+                        BackgroundColor="#444444"
+                        TextColor="White"
+                        Clicked="OnOpenSettingsClicked"
+                        HorizontalOptions="Center"/>
+                
+                <Button x:Name="BtnReset" 
+                        Text="{Binding LanguageVM.Reset}" 
+                        BackgroundColor="#CC0000" 
+                        TextColor="White" 
+                        Clicked="OnResetClicked"
+                        HorizontalOptions="Center"
+                        IsVisible="False" 
+                        Padding="10,5"/>
+
+            </VerticalStackLayout>
+
+            <views:SettingsView x:Name="GameSettingsView" IsVisible="False" HorizontalOptions="Center" VerticalOptions="Center"/>
+            
+        </Grid>
+
+        <BoxView Grid.Row="1" InputTransparent="True">
+            <BoxView.Background>
+                <LinearGradientBrush StartPoint="0, 0" EndPoint="1, 0">
+                    <!-- Vasak serv on must -->
+                    <GradientStop Color="{AppThemeBinding Light={StaticResource UIMainL}, Dark={StaticResource UIMainD}}" Offset="0.0" />
+                    <GradientStop Color="Transparent" Offset="0.02" />
+                    <GradientStop Color="Transparent" Offset="0.98" />
+                    <!-- Parem serv muutub uuesti mustaks -->
+                    <GradientStop Color="{AppThemeBinding Light={StaticResource UIMainL}, Dark={StaticResource UIMainD}}" Offset="1.0" />
+                </LinearGradientBrush>
+            </BoxView.Background>
+        </BoxView>
+
+        <BoxView Grid.Row="1" InputTransparent="True">
+            <BoxView.Background>
+                <LinearGradientBrush StartPoint="0, 0" EndPoint="0, 1">
+                    <!-- Ülemine serv on must -->
+                    <GradientStop Color="{AppThemeBinding Light={StaticResource UIMainL}, Dark={StaticResource UIMainD}}" Offset="0.0" />
+                    <GradientStop Color="Transparent" Offset="0.04" />
+                    <GradientStop Color="Transparent" Offset="0.96" />
+                    <!-- Alumine serv muutub uuesti mustaks -->
+                    <GradientStop Color="{AppThemeBinding Light={StaticResource UIMainL}, Dark={StaticResource UIMainD}}" Offset="1.0" />
+                </LinearGradientBrush>
+            </BoxView.Background>
+        </BoxView>
+        
+        <Border x:Name="EndPopup" StrokeShape="RoundRectangle 15" StrokeThickness="0" Grid.Row="0" Grid.RowSpan="2" IsVisible="False" BackgroundColor="Gray" HeightRequest="400" WidthRequest="500" HorizontalOptions="Center" VerticalOptions="Center">
+            <VerticalStackLayout HorizontalOptions="Center" VerticalOptions="Center" Margin="5">
+                <Label TextColor="DarkRed" FontSize="20" HorizontalOptions="Center" Text="{Binding LanguageVM.GameOver}" />
+                <Label TextColor="Black" FontSize="18" HorizontalOptions="Center" Text="{Binding LanguageVM.OutOfLives}" />
+                <Label x:Name="EndGold" TextColor="Black" FontSize="18" HorizontalOptions="Center"/>
+                <Label x:Name="EndScore" TextColor="Black" FontSize="18" HorizontalOptions="Center"/>
+                <Label x:Name="TotalScore" TextColor="Black" FontSize="18" HorizontalOptions="Center"/>
+                <Label TextColor="Black" FontSize="18" HorizontalOptions="Center"/>
+                <Label TextColor="Green" FontSize="18" HorizontalOptions="Center" Text="{Binding LanguageVM.InsertName}" />
+                <Entry x:Name="PlayerNameEntry" 
+                       Placeholder="Player" 
+                       WidthRequest="300" />
+                <Button 
+                        Text="{Binding LanguageVM.SaveResult}"
+                        BackgroundColor="#2E8B57"
+                        TextColor="White" 
+                        Clicked="OnSubmitNameClicked"
+                        HorizontalOptions="Center"
+                        IsVisible="True"
+                        Padding="10,5"/>
+            </VerticalStackLayout>
+        </Border>
+    </Grid>
 </ContentPage>

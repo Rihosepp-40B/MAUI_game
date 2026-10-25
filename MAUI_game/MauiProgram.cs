@@ -1,4 +1,6 @@
-﻿using Microsoft.Extensions.Logging;
+﻿using MAUI_game.Services;
+using MAUI_game.Views;
+using Microsoft.Extensions.Logging;
 
 namespace MAUI_game
 {
@@ -15,8 +17,11 @@ namespace MAUI_game
                     fonts.AddFont("OpenSans-Semibold.ttf", "OpenSansSemibold");
                 });
 
+            builder.Services.AddTransient<DrawGameService>();
+            builder.Services.AddTransient<MainPage>();
+
 #if DEBUG
-    		builder.Logging.AddDebug();
+            builder.Logging.AddDebug();
 #endif
 
             return builder.Build();

@@ -1,6 +1,6 @@
 ﻿namespace MAUI_game.Services
 {
-    public static class DisplayCutoutHelper
+    public static class DisplayCutoutService
     // Abimeetod, kaamerariba laiuse leidmiseks ning sama suguse riba kuvamiseks vastas küljel
     {
         public static async Task<double> CheckAndMeasureCutout()
