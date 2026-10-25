@@ -81,6 +81,7 @@ namespace MAUI_game.ViewModels
         public string WaveLvl => AppResources.WaveLvl;
         public string Reset => AppResources.Reset;
         public string HP => AppResources.HP;
+        public string Scoreboard => AppResources.Scoreboard;
 
         public GameLanguageViewModel()
         {
@@ -110,7 +111,8 @@ namespace MAUI_game.ViewModels
             OnPropertyChanged(nameof(Resume));
             OnPropertyChanged(nameof(Reset));
             OnPropertyChanged(nameof(Highscore));
-            OnPropertyChanged(nameof(Highscore));
+            OnPropertyChanged(nameof(Scoreboard));
+
         }
 
         protected void OnPropertyChanged([CallerMemberName] string name = null)

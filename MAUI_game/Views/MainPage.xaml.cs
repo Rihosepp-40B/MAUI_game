@@ -8,6 +8,7 @@ namespace MAUI_game.Views
 {
     public partial class MainPage : ContentPage, IDisposable
     {
+        private readonly DatabaseService _databaseService = new DatabaseService();
         private double _cachedCutoutWidthDp = 0; // Siia salvestame kaamera riba mõõdetud laiuse
         private bool isGamePaused = false;
 
@@ -26,6 +27,7 @@ namespace MAUI_game.Views
         public List<MapPointModel> PathPoints => GameWorldInstance.PathPoints;
         private readonly DrawGameService _drawGameService;
 
+        // Konstruktor
         public MainPage(DrawGameService drawGameService)
         {
             LoadTowerCatalog();
@@ -57,6 +59,13 @@ namespace MAUI_game.Views
                 BindingContext = this;
 
                 GameSettingsView.IsVisible = false;
+                PausMenuLayout.IsVisible = true;
+            };
+
+            ScoreboardView.CloseRequested += (s, e) =>
+            {
+                GameStopScreen();
+                ScoreboardView.IsVisible = false;
                 PausMenuLayout.IsVisible = true;
             };
             _drawGameService = drawGameService;
@@ -396,11 +405,25 @@ namespace MAUI_game.Views
         }
 
         //Lõpuakna nime esitamise (salvestamise) nupule vajutamine
-        private void OnSubmitNameClicked(object sender, EventArgs e)
+        private async void OnSubmitNameClicked(object sender, EventArgs e)
         {
             string playerName = PlayerNameEntry.Text;
-            GameWorldInstance.CurrentPlayer.Name = string.IsNullOrWhiteSpace(playerName) ? "Player" : playerName.Trim();
-            CheckAndSaveHighScore(GameWorldInstance.CurrentPlayer.TotalScore, GameWorldInstance.CurrentPlayer.Name);
+
+            string finalName = string.IsNullOrWhiteSpace(playerName) ? "Player" : playerName.Trim();
+            GameWorldInstance.CurrentPlayer.Name = finalName;
+
+            int finalScore = GameWorldInstance.CurrentPlayer.TotalScore;
+
+            // Salvestame SQLite andmebaasi
+            var newScoreRecord = new ScoreModel
+            {
+                PlayerName = finalName,
+                Score = finalScore
+            };
+            await _databaseService.SaveScoreAsync(newScoreRecord);
+
+            CheckAndSaveHighScore(finalScore, finalName);
+
             EndPopup.IsVisible = false;
         }
 
@@ -446,6 +469,13 @@ namespace MAUI_game.Views
         {
             PausMenuLayout.IsVisible = false;      // Peidab tavalise pausimenüü
             GameSettingsView.IsVisible = true;       // Kuvab teise XAML-i sisu
+        }
+
+        private async void OnOpenScoreboardClicked(object sender, EventArgs e)
+        {
+            PausMenuLayout.IsVisible = false;      // Peidab tavalise pausimenüü
+            ScoreboardView.IsVisible = true;       // Kuvab edetabeli vaate
+            await ScoreboardView.LoadScoresAsync(); // Laeb värsked andmed andmebaasist
         }
 
         public void Dispose()

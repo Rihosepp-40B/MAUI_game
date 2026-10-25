@@ -11,7 +11,7 @@
              SafeAreaEdges="None"> <!--Background muudab lehekülje tausta värvi shell.NavbarVisible = "False" kautab toolbari-->
     
     <ContentPage.Resources>
-        <Color x:Key="UIMainL">LightGrey</Color>
+        <Color x:Key="UIMainL">DimGray</Color>
         <Color x:Key="UIMainD">Black</Color>
     </ContentPage.Resources>
 
@@ -100,31 +100,44 @@
                 <Label x:Name="LblGamePaused" IsVisible="True" TextColor="LawnGreen" FontSize="20" HorizontalOptions="Center" Text="{Binding LanguageVM.Paused}" />
                 <Label x:Name="LblGameOver" IsVisible="False" TextColor="Red" FontSize="20" HorizontalOptions="Center" Text="{Binding LanguageVM.GameOver}"/>
                 <Label x:Name="LblHighScore" IsVisible="True" TextColor="White" FontSize="18" HorizontalOptions="Center" Text="{Binding LanguageVM.Highscore}"/>
-                <Button x:Name="BtnResume" 
-                        Text="{Binding LanguageVM.Resume}" 
-                        BackgroundColor="#2E8B57"
-                        TextColor="White" 
-                        Clicked="OnPauseClicked"
-                        HorizontalOptions="Center"
-                        IsVisible="True"
-                        VerticalOptions="Center" 
-                        Padding="10,5"/>
+                <VerticalStackLayout HorizontalOptions="Center" VerticalOptions="Center" Spacing="5">
+                    <Button x:Name="BtnResume" 
+                            Text="{Binding LanguageVM.Resume}" 
+                            BackgroundColor="#2E8B57"
+                            TextColor="White" 
+                            Clicked="OnPauseClicked"
+                            HorizontalOptions="Center"
+                            IsVisible="True"
+                            VerticalOptions="Center" 
+                            Padding="10,5"
+                            WidthRequest="100"/>
 
-                <Button Text="{Binding LanguageVM.Settings}" 
-                        BackgroundColor="#444444"
-                        TextColor="White"
-                        Clicked="OnOpenSettingsClicked"
-                        HorizontalOptions="Center"/>
-                
-                <Button x:Name="BtnReset" 
-                        Text="{Binding LanguageVM.Reset}" 
-                        BackgroundColor="#CC0000" 
-                        TextColor="White" 
-                        Clicked="OnResetClicked"
-                        HorizontalOptions="Center"
-                        IsVisible="False" 
-                        Padding="10,5"/>
+                    <Button Text="{Binding LanguageVM.Settings}" 
+                            BackgroundColor="#444444"
+                            TextColor="White"
+                            Clicked="OnOpenSettingsClicked"
+                            HorizontalOptions="Center"
+                            Padding="10,5"
+                            WidthRequest="100"/>
 
+                    <Button Text="{Binding LanguageVM.Scoreboard}" 
+                            BackgroundColor="GreenYellow"
+                            TextColor="Black"
+                            Clicked="OnOpenScoreboardClicked"
+                            HorizontalOptions="Center"
+                            Padding="10,5"
+                            WidthRequest="100"/>
+
+                    <Button x:Name="BtnReset" 
+                            Text="{Binding LanguageVM.Reset}" 
+                            BackgroundColor="#CC0000" 
+                            TextColor="White" 
+                            Clicked="OnResetClicked"
+                            HorizontalOptions="Center"
+                            IsVisible="False" 
+                            Padding="10,5"
+                            WidthRequest="100"/>
+                </VerticalStackLayout>
             </VerticalStackLayout>
 
             <views:SettingsView x:Name="GameSettingsView" IsVisible="False" HorizontalOptions="Center" VerticalOptions="Center"/>
@@ -156,6 +169,7 @@
                 </LinearGradientBrush>
             </BoxView.Background>
         </BoxView>
+        <views:ScoreboardView Grid.Row="0" Grid.RowSpan="2" x:Name="ScoreboardView" IsVisible="False" ZIndex="100" />
         
         <Border x:Name="EndPopup" StrokeShape="RoundRectangle 15" StrokeThickness="0" Grid.Row="0" Grid.RowSpan="2" IsVisible="False" BackgroundColor="Gray" HeightRequest="400" WidthRequest="500" HorizontalOptions="Center" VerticalOptions="Center">
             <VerticalStackLayout HorizontalOptions="Center" VerticalOptions="Center" Margin="5">

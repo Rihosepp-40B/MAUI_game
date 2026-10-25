@@ -1,0 +1,68 @@
+<?xml version="1.0" encoding="utf-8" ?>
+<ContentView xmlns="http://schemas.microsoft.com/dotnet/2021/maui"
+             xmlns:x="http://schemas.microsoft.com/winfx/2009/xaml"
+             xmlns:vm="clr-namespace:MAUI_game.ViewModels"
+             x:Class="MAUI_game.Views.ScoreboardView">
+
+    <ContentView.BindingContext>
+        <vm:GameLanguageViewModel />
+    </ContentView.BindingContext>
+
+    <Grid BackgroundColor="#CC000000" VerticalOptions="Fill" HorizontalOptions="Fill" Padding="30">
+        <VerticalStackLayout BackgroundColor="{AppThemeBinding Light=DimGrey, Dark=DarkSlateGray}" 
+                             VerticalOptions="Center" 
+                             HorizontalOptions="Center" 
+                             WidthRequest="450" 
+                             HeightRequest="350" 
+                             Padding="20" 
+                             Spacing="15">
+
+            <Label Text="{Binding Scoreboard}" 
+                   FontSize="22" 
+                   FontAttributes="Bold" 
+                   HorizontalOptions="Center" />
+
+            <!-- CollectionView andmete kuvamiseks -->
+            <CollectionView x:Name="ScoreCollectionView" HeightRequest="200">
+                <CollectionView.ItemTemplate>
+                    <DataTemplate>
+                        <Grid Padding="8" ColumnDefinitions="*, Auto, Auto, Auto, Auto">
+                            <Label Text="{Binding PlayerName}" FontSize="16" Grid.Column="0" VerticalOptions="Center" />
+                            <Label Text="{Binding Score}" FontSize="16" FontAttributes="Bold" Grid.Column="1" Margin="10,0" VerticalOptions="Center" />
+                            <Label Text="{Binding DatePlayed, StringFormat='{0:dd.MM.yyyy}'}" FontSize="16" FontAttributes="Bold" Grid.Column="2" Margin="10,0" VerticalOptions="Center" />
+
+                            <Button Text="✏️" 
+                                    TextColor="White" 
+                                    BackgroundColor="Black" 
+                                    FontSize="12" 
+                                    HeightRequest="30" 
+                                    WidthRequest="30" 
+                                    Grid.Column="3" 
+                                    Margin="5,0,0,0"
+                                    Clicked="OnEditScoreClicked" 
+                                    CommandParameter="{Binding .}" />
+                            
+                            <Button Text="X" 
+                                    TextColor="White" 
+                                    BackgroundColor="Red" 
+                                    FontSize="12" 
+                                    HeightRequest="30" 
+                                    WidthRequest="30" 
+                                    Grid.Column="4" 
+                                    Clicked="OnDeleteScoreClicked" 
+                                    CommandParameter="{Binding .}" />
+                        </Grid>
+                    </DataTemplate>
+                </CollectionView.ItemTemplate>
+            </CollectionView>
+
+            <!-- Tagasi nupp -->
+            <Button x:Name="BtnClose" 
+                    Text="{Binding Back}" 
+                    BackgroundColor="Gray" 
+                    TextColor="White" 
+                    Clicked="OnCloseClicked" />
+
+        </VerticalStackLayout>
+    </Grid>
+</ContentView>

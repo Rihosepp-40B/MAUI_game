@@ -70,6 +70,24 @@ namespace MAUI_game.Resources.Localization {
         }
         
         /// <summary>
+        ///   Looks up a localized string similar to Change name.
+        /// </summary>
+        internal static string ChangeName {
+            get {
+                return ResourceManager.GetString("ChangeName", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Insert name to change it:.
+        /// </summary>
+        internal static string ChangeNameInsert {
+            get {
+                return ResourceManager.GetString("ChangeNameInsert", resourceCulture);
+            }
+        }
+        
+        /// <summary>
         ///   Looks up a localized string similar to Choose here....
         /// </summary>
         internal static string ChooseHere {
@@ -372,6 +390,15 @@ namespace MAUI_game.Resources.Localization {
         internal static string Score {
             get {
                 return ResourceManager.GetString("Score", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Scoreboard.
+        /// </summary>
+        internal static string Scoreboard {
+            get {
+                return ResourceManager.GetString("Scoreboard", resourceCulture);
             }
         }
         

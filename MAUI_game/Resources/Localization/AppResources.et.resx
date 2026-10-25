@@ -237,4 +237,13 @@
   <data name="LightTheme" xml:space="preserve">
     <value>Hele</value>
   </data>
+  <data name="Scoreboard" xml:space="preserve">
+    <value>Edetabel</value>
+  </data>
+  <data name="ChangeName" xml:space="preserve">
+    <value>Muuda nime</value>
+  </data>
+  <data name="ChangeNameInsert" xml:space="preserve">
+    <value>Sisesta nime muutmiseks uus nimi:</value>
+  </data>
 </root>

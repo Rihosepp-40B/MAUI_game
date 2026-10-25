@@ -238,4 +238,13 @@
   <data name="LightTheme" xml:space="preserve">
     <value>Light</value>
   </data>
+  <data name="Scoreboard" xml:space="preserve">
+    <value>Scoreboard</value>
+  </data>
+  <data name="ChangeName" xml:space="preserve">
+    <value>Change name</value>
+  </data>
+  <data name="ChangeNameInsert" xml:space="preserve">
+    <value>Insert name to change it:</value>
+  </data>
 </root>
