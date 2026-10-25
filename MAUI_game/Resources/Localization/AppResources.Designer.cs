@@ -61,6 +61,15 @@ namespace MAUI_game.Resources.Localization {
         }
         
         /// <summary>
+        ///   Looks up a localized string similar to Audio:.
+        /// </summary>
+        internal static string Audio {
+            get {
+                return ResourceManager.GetString("Audio", resourceCulture);
+            }
+        }
+        
+        /// <summary>
         ///   Looks up a localized string similar to Back.
         /// </summary>
         internal static string Back {

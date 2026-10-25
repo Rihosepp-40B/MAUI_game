@@ -247,4 +247,7 @@
   <data name="ChangeNameInsert" xml:space="preserve">
     <value>Insert name to change it:</value>
   </data>
+  <data name="Audio" xml:space="preserve">
+    <value>Audio:</value>
+  </data>
 </root>

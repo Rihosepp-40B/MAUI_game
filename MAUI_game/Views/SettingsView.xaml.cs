@@ -1,5 +1,6 @@
 using MAUI_game.ViewModels;
 using MAUI_game.Services;
+using MAUI_game.Models;
 
 namespace MAUI_game.Views;
 
@@ -13,6 +14,8 @@ public partial class SettingsView : ContentView
         BindingContext = new GameLanguageViewModel();
 
         LanguageService.LanguageChanged += OnLanguageChanged;
+
+        SoundSwitch.IsToggled = GameSettingsModel.IsSoundEnabled;
     }
 
     // Värskendab settings menüü keelt
@@ -33,6 +36,12 @@ public partial class SettingsView : ContentView
             string themeCode = ThemeService.GetThemeCode(selectedTheme);
             ThemeService.SetTheme(themeCode);
         }
+    }
+
+    private void OnSoundSwitchToggled(object sender, ToggledEventArgs e)
+    {
+        // Salvestame uue väärtuse globaalsesse klassi
+        GameSettingsModel.IsSoundEnabled = e.Value;
     }
 
     private void OnCloseClicked(object sender, EventArgs e)

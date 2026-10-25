@@ -246,4 +246,7 @@
   <data name="ChangeNameInsert" xml:space="preserve">
     <value>Sisesta nime muutmiseks uus nimi:</value>
   </data>
+  <data name="Audio" xml:space="preserve">
+    <value>Helid:</value>
+  </data>
 </root>

@@ -4,6 +4,7 @@ namespace MAUI_game.Services.UpdateManagers
 {
     public class EnemyManager
     {
+        private readonly AudioService _audioService = new AudioService();
         private readonly List<EnemyModel> _enemies;
         private readonly List<MapPointModel> _pathPoints;
         private readonly PlayerModel _currentPlayer;
@@ -30,6 +31,8 @@ namespace MAUI_game.Services.UpdateManagers
                     _currentPlayer.Score += enemy.GiveScore;
 
                     _enemies.RemoveAt(i);
+                    _audioService.PlaySoundAsync("Death.WAV");
+
                     continue;
                 }
 

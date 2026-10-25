@@ -5,6 +5,7 @@ namespace MAUI_game.Services.UpdateManagers
 {
     public class CombatManager
     {
+        private readonly AudioService _audioService = new AudioService();
         private readonly List<EnemyModel> _enemies;
         private readonly List<TowerModel> _towers;
         private readonly List<DirectfireEffectModel> _activeDirectfires;
@@ -75,6 +76,7 @@ namespace MAUI_game.Services.UpdateManagers
                     CheckWhatWasHit(proj, _towers);
                     CreateExplosionData(proj);
                     _activeProjectiles.RemoveAt(i);
+                    _audioService.PlaySoundAsync("Explosion.WAV");
                 }
             }
         }
@@ -94,18 +96,7 @@ namespace MAUI_game.Services.UpdateManagers
         //Kontrollib, mis objektid said pihta
         private void CheckWhatWasHit(ProjectileModel proj, IEnumerable<IDamageable> Targets)
         {
-            //foreach (var enemy in _enemies)
-            //{
-            //    int health = enemy.CurrentHealth;
-            //    ApplyAreaDamageToObjects(enemy.X, enemy.Y, ref health, proj, enemy.SizeRadius);
-            //    enemy.CurrentHealth = health;
-            //}
-            //foreach (var tower in _towers)
-            //{
-            //    int health = tower.CurrentHealth;
-            //    ApplyAreaDamageToObjects(tower.X, tower.Y, ref health, proj, tower.SizeRadius);
-            //    tower.CurrentHealth = health;
-            //}
+
             for (int i = Targets.Count() - 1; i >= 0; i--)
             {
                 var target = Targets.ElementAt(i);
@@ -120,32 +111,25 @@ namespace MAUI_game.Services.UpdateManagers
         {
             float dx = objX - proj.TargetX;
             float dy = objY - proj.TargetY;
-            float distSq = dx * dx + dy * dy;
+            float distSq = (float)Math.Sqrt(dx * dx + dy * dy);
 
-            //if (proj.DamageArea > 0 && distSq < proj.DamageArea + objR) // vana
-            if (proj.DamageArea > 0) // uus
+
+            if (proj.DamageArea > 0 && distSq < proj.DamageArea + objR)
             {
-                float radius = proj.DamageArea + objR; // uus
-                if (distSq <= radius * radius) // UUs
-                { //
-                    currentHealth -= proj.Damage;
-                } //
+                currentHealth -= proj.Damage;
             }
-            //else if (proj.SplashDamageArea > 0 && distSq < proj.SplashDamageArea + objR) // vana
-            else if (proj.SplashDamageArea > 0) // uus
+
+            else if (proj.SplashDamageArea > 0 && distSq < proj.SplashDamageArea + objR)
             {
-                float radius = proj.SplashDamageArea + objR; // uus
-                if (distSq <= radius * radius) // uus
-                { //
                     currentHealth -= Math.Max(1, proj.SplashDamage);
-                } //
             }
-            //else if (proj.DamageArea == 0 && proj.SplashDamageArea == 0 && distSq <= 20) // vana
-            else if (distSq <= 400) // UUs
+
+            else if (proj.DamageArea == 0 && proj.SplashDamageArea == 0 && distSq <= objR)
             {
                 currentHealth -= proj.Damage;
             }
         }
+
 
         //Uuendab tornide olekut ja tegevust
         public void UpdateTowers()
@@ -163,6 +147,7 @@ namespace MAUI_game.Services.UpdateManagers
                 if (tower.CooldownTimer > 0)
                 {
                     tower.CooldownTimer--;
+                    tower.SoundCoolDown--;
                     continue;
                 }
                 FindEnemyToShoot(tower);
@@ -172,34 +157,7 @@ namespace MAUI_game.Services.UpdateManagers
         //Leiab vaenlase keda tulistada
         public void FindEnemyToShoot(TowerModel tower)
         {
-            //foreach (var enemy in _enemies) // VANA
-            //{
-            //    float dx = enemy.X - tower.X;
-            //    float dy = enemy.Y - tower.Y;
-            //    float distToEnemy = (dx * dx) + (dy * dy);
 
-            //    float enemyRadius = enemy.SizeRadius;
-
-            //    float maxAllowedDistance = tower.Range + enemyRadius;
-            //    float maxAllowedDistanceSquared = maxAllowedDistance * maxAllowedDistance;
-
-            //    if (distToEnemy <= maxAllowedDistanceSquared)
-            //    {
-            //        if (tower.IsDirectFire)
-            //        {
-            //            DirectFireEffect(enemy, tower);
-            //            DirectFireDamage(enemy, tower);
-            //        }
-            //        else
-            //        {
-            //            SetupProjectile(tower, enemy);
-            //        }
-
-            //        // Torni tulekiiruse kehtestamine
-            //        tower.CooldownTimer = tower.AttackSpeedFrames;
-            //        break;
-            //    }
-            //}
             for (int i = 0; i < _enemies.Count; i++)
             {
                 var enemy = _enemies[i];
@@ -216,22 +174,37 @@ namespace MAUI_game.Services.UpdateManagers
                     {
                         DirectFireEffect(enemy, tower);
                         DirectFireDamage(enemy, tower);
+                        PlayFieringSound(tower, 4);
                     }
                     else
                     {
                         SetupProjectile(tower, enemy);
+                        PlayFieringSound(tower, 1);
                     }
 
                     // Torni tulekiiruse kehtestamine
-                    tower.CooldownTimer = tower.AttackSpeedFrames;
+                    tower.CooldownTimer = tower.AttackSpeedFrames;                                       
                     break;
                 }
             }
         }
 
+        public void PlayFieringSound(TowerModel tower, int multiplier)
+        {
+            if (tower.SoundCoolDown > 0)
+            {
+                tower.SoundCoolDown--;
+            }
+            else
+            {
+                _audioService.PlaySoundAsync(tower.SoundFileName);
+                tower.SoundCoolDown = tower.AttackSpeedFrames * multiplier;
+            }            
+        }
+
         private void SetupProjectile(TowerModel tower, EnemyModel enemy)
         {
-            int splashDamage = tower.Damage / 4;
+            int splashDamage = tower.Damage / 2;
             // KAUDTULI: loome mürsu, mis jõuab sihtmärgini määratud TravelFramiga
             _activeProjectiles.Add(new ProjectileModel
             {
@@ -246,10 +219,11 @@ namespace MAUI_game.Services.UpdateManagers
                 SplashDamageArea = tower.SplashDamageArea,
                 SplashDamage = splashDamage,
                 TotalTravelFrames = tower.AttackTravelFrames,  // <--- Otse tornilt
-                FramesRemaining = tower.AttackTravelFrames    // <--- Otse tornilt
+                FramesRemaining = tower.AttackTravelFrames,    // <--- Otse tornilt
+
             });
         }
-
+                
         // Otsetule relva tule loomine
         private void DirectFireEffect(EnemyModel enemy, TowerModel tower)
         {
@@ -260,7 +234,7 @@ namespace MAUI_game.Services.UpdateManagers
                 StartY = tower.Y,
                 EndX = enemy.X,
                 EndY = enemy.Y,
-            });
+            });            
         }
 
         private void DirectFireDamage(EnemyModel enemyPrimary, TowerModel tower)

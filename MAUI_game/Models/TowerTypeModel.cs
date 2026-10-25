@@ -18,5 +18,6 @@
         public int SizeRadius { get; set; }
 
         public bool IsDirectFire {  get; set; }
+        public string SoundFileName { get; set; }
     }
 }

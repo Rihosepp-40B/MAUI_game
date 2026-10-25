@@ -27,6 +27,7 @@ namespace MAUI_game.Services
                         Color = Colors.ForestGreen,
                         SizeRadius = 25,
                         IsDirectFire = true,
+                        SoundFileName = "MG.WAV"
                     }
                 },
             {
@@ -47,6 +48,7 @@ namespace MAUI_game.Services
                         Color = Colors.Brown,
                         SizeRadius = 45,
                         IsDirectFire = false,
+                        SoundFileName = "Mortar.WAV"
                     }
                 },
             };

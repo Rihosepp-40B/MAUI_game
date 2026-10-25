@@ -39,5 +39,8 @@ namespace MAUI_game.Models
 
         public float RangeSquared => Range * Range;
         public Color DotColor { get; set; } = Colors.White;
+
+        public string SoundFileName { get; set; }
+        public int SoundCoolDown { get; set; } = 0;
     }
 }

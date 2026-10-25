@@ -31,6 +31,11 @@
                 TitleColor="LightGray"
                 BackgroundColor="#333333" 
                 SelectedIndexChanged="OnThemePickerChanged"/>
+        
+        <HorizontalStackLayout Spacing="15" VerticalOptions="Center">
+            <Label Text="{Binding Audio}" VerticalTextAlignment="Center" FontSize="16" />
+            <Switch x:Name="SoundSwitch" Toggled="OnSoundSwitchToggled" />
+        </HorizontalStackLayout>
 
 
         <!-- Tagasi nupp -->

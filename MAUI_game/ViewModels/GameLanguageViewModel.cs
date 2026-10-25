@@ -82,6 +82,7 @@ namespace MAUI_game.ViewModels
         public string Reset => AppResources.Reset;
         public string HP => AppResources.HP;
         public string Scoreboard => AppResources.Scoreboard;
+        public string Audio => AppResources.Audio;
 
         public GameLanguageViewModel()
         {

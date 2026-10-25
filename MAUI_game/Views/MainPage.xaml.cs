@@ -275,6 +275,7 @@ namespace MAUI_game.Views
                         AttackSpeedFrames = attackFrames, // Laskude vahel olevate kaadrite arv.
                         AttackTravelFrames = travelFrames,
                         CurrentHealth = towerInfo.Health,
+                        SoundFileName = towerInfo.SoundFileName,
                     };
 
                     GameWorldInstance.Towers.Add(newTower);
