@@ -13,7 +13,8 @@ namespace MAUI_game.Services
                 return;
 
             // Määrame andmebaasi faili asukoha seadmes
-            var dbPath = Path.Combine(FileSystem.AppDataDirectory, "towergame.db3"); // Kuskil truvaline kaust
+            var dbPath = Path.Combine(FileSystem.AppDataDirectory, "towergame.db3"); // Kuskil truvaline kaust /data/user/0/com.companyname.maui_game/files/towergame.db3
+
             _database = new SQLiteAsyncConnection(dbPath);
 
             // Loome tabeli, kui seda pole veel olemas
